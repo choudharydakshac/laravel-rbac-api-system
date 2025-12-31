@@ -25,6 +25,7 @@ class RbacSeeder extends Seeder
             ->withRole('admin')
             ->create([
                 'email' => 'admin@example.com',
+                'password' => bcrypt('password'),
             ]);
     }
 }
