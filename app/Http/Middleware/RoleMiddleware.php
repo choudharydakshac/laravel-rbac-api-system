@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\AuditLogger;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,12 @@ class RoleMiddleware
         }
 
         if (! $user->hasAnyRole($roles)) {
+
+            AuditLogger::log(
+                'forbidden',
+                $user?->id
+            );
+
             return response()->json([
                 'message' => 'Forbidden. Insufficient role.'
             ], 403);

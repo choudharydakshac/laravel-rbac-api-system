@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\AuditLogger;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,13 +26,19 @@ class ApiRateLimitMiddleware
         $maxAttempts = $user && $user->hasRole('admin') ? 200 : 60;
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+
+            AuditLogger::log(
+                'rate_limited',
+                $user?->id
+            );
+
             return response()->json([
                 'message' => 'Too many requests. Please slow down.'
             ], 429);
         }
 
         RateLimiter::hit($key, 60);
-        
+
         return $next($request);
     }
 }
