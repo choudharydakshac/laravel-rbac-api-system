@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\UserController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -11,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', function (\Illuminate\Http\Request $request) {
         return $request->user();
     });
+
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
@@ -20,5 +22,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'message' => 'Welcome Admin'
         ]);
     });
+
+    Route::get('/users', [UserController::class, 'index']);
 
 });
